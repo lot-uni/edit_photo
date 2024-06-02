@@ -16,19 +16,24 @@ const stampHeight = 30;
 function drawStamp(x, y) {
   ctx.drawImage(tagImage, x-18, y+15, stampWidth, stampHeight);
 }
-c.addEventListener('click', (event) => {
-  const mouseX = event.clientX - c.getBoundingClientRect().left;
-  const mouseY = event.clientY - c.getBoundingClientRect().top;
-  drawStamp(mouseX - stampWidth / 2, mouseY - stampHeight / 2);
+
+c.addEventListener('touchstart', (event) => {
+  const rect = c.getBoundingClientRect();
+  const touch = event.touches[0];
+  const touchX = touch.clientX - rect.left;
+  const touchY = touch.clientY - rect.top;
+  drawStamp(touchX - stampWidth / 2, touchY - stampHeight / 2);
 });
+
 function clear(){
   ctx.clearRect(0, 0, c.width, c.height);
 }
-function mouseDownListener(e){
+
+function touchStartListener(e){
     const rect = e.target.getBoundingClientRect();
-    pos.x = e.clientX - rect.left;
-    pos.y = e.clientY - rect.top;
- 
+    const touch = e.touches[0];
+    pos.x = touch.clientX - rect.left;
+    pos.y = touch.clientY - rect.top;
 }
 
 selFile.addEventListener("change", function(evt){
@@ -51,32 +56,25 @@ selFile.addEventListener("change", function(evt){
 }, false);
 
 window.addEventListener("load", function(){
-  // キャンバス情報取
+  // キャンバス情報取得
 
-  // キャンバス上でマウスボタンを押した時の処理
-  c.addEventListener("mousedown", mouseDownListener, false);
-  c.addEventListener("mouseup", mouseDownListener, false);
-
-  c.addEventListener('mousedown', () => {
-    rectPas.x=pos.x;
-    rectPas.y=pos.y;
-  }, {once: false});
-  c.addEventListener('mouseup', () => {
-    ctx.strokeRect(rectPas.x,rectPas.y,pos.x-rectPas.x,pos.y-rectPas.y);
-  }, {once: false});
-
-  // 
-  c.addEventListener("touchstart", mouseDownListener, false);
-  c.addEventListener("touchstart", mouseDownListener, false);
+  // キャンバス上でタッチした時の処理
+  c.addEventListener("touchstart", touchStartListener, false);
 
   c.addEventListener('touchstart', () => {
-    rectPas.x=pos.x;
-    rectPas.y=pos.y;
+    const rect = c.getBoundingClientRect();
+    const touch = event.touches[0];
+    rectPas.x = touch.clientX - rect.left;
+    rectPas.y = touch.clientY - rect.top;
   }, {once: false});
-  c.addEventListener('touchend', () => {
-    ctx.strokeRect(rectPas.x,rectPas.y,pos.x-rectPas.x,pos.y-rectPas.y);
+
+  c.addEventListener('touchend', (event) => {
+    const rect = c.getBoundingClientRect();
+    const touch = event.touches[0];
+    const endX = touch.clientX - rect.left;
+    const endY = touch.clientY - rect.top;
+    ctx.strokeRect(rectPas.x, rectPas.y, endX - rectPas.x, endY - rectPas.y);
   }, {once: false});
 });
 
-cleaeButton.addEventListener('mousedown', clear, false);
-// c.addEventListener('mouseup', onMouseUp, false);
+cleaeButton.addEventListener('touchstart', clear, false);
