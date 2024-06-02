@@ -14,12 +14,14 @@ function drawStamp(x, y) {
 }
 
 function touchStartListener(e){
+    e.preventDefault(); // デフォルトの動作をキャンセル
     const rect = e.target.getBoundingClientRect();
     pos.x = e.touches[0].clientX - rect.left;
     pos.y = e.touches[0].clientY - rect.top;
 }
 
 function touchEndListener(e){
+    e.preventDefault(); // デフォルトの動作をキャンセル
     const rect = e.target.getBoundingClientRect();
     var endX = e.changedTouches[0].clientX - rect.left;
     var endY = e.changedTouches[0].clientY - rect.top;
@@ -28,36 +30,37 @@ function touchEndListener(e){
 }
 
 function clearCanvas(evt){
-  ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
+    evt.preventDefault(); // デフォルトの動作をキャンセル
+    ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
 }
 
 selFile.addEventListener("change", function(evt){
- var file = evt.target.files; // fileの取得
- var reader = new FileReader();
+    var file = evt.target.files; // fileの取得
+    var reader = new FileReader();
 
- reader.readAsDataURL(file[0]); // fileの要素をdataURL形式で読み込む
+    reader.readAsDataURL(file[0]); // fileの要素をdataURL形式で読み込む
 
- // ファイルを読み込んだ時に実行する
- reader.onload = function(){
-  var dataUrl = reader.result; // 読み込んだファイルURL
-  var img = new Image(); // 画像
+    // ファイルを読み込んだ時に実行する
+    reader.onload = function(){
+        var dataUrl = reader.result; // 読み込んだファイルURL
+        var img = new Image(); // 画像
 
-  img.src = dataUrl;
-  img.onload=function(){
-    ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-    ctx.drawImage(img,0,0,400,400);
-  }
- }
+        img.src = dataUrl;
+        img.onload=function(){
+            ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
+            ctx.drawImage(img,0,0,400,400);
+        }
+    }
 }, false);
 
 window.addEventListener("load", function(){
-  c.addEventListener("touchstart", touchStartListener, false);
-  c.addEventListener("touchend", touchEndListener, false);
+    c.addEventListener("touchstart", touchStartListener, false);
+    c.addEventListener("touchend", touchEndListener, false);
 
-  c.addEventListener('touchstart', () => {
-    rectPas.x=pos.x;
-    rectPas.y=pos.y;
-  }, {once: false});
+    c.addEventListener('touchstart', () => {
+        rectPas.x=pos.x;
+        rectPas.y=pos.y;
+    }, {once: false});
 });
 
 cleaeButton.addEventListener('touchstart', clearCanvas, false);
