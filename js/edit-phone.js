@@ -61,7 +61,7 @@ window.addEventListener("load", function(){
   // キャンバス上でタッチした時の処理
   c.addEventListener("touchstart", touchStartListener, false);
 
-  c.addEventListener('touchstart', () => {
+  c.addEventListener('touchstart', (event) => {
     const rect = c.getBoundingClientRect();
     const touch = event.touches[0];
     rectPas.x = touch.clientX - rect.left;
