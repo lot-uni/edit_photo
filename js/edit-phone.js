@@ -1,3 +1,5 @@
+console.log("phone");
+
 var selFile = document.getElementById('file_choice');
 var cleaeButton = document.getElementById('button');
 var c = document.getElementById('board');
@@ -16,52 +18,60 @@ function drawStamp(x, y) {
 }
 
 c.addEventListener('touchstart', (event) => {
-  const rect = event.target.getBoundingClientRect();
-  pos.x = event.touches[0].clientX - rect.left;
-  pos.y = event.touches[0].clientY - rect.top;
-  drawStamp(pos.x - stampWidth / 2, pos.y - stampHeight / 2);
+  event.preventDefault();
+  const touch = event.touches[0];
+  const rect = c.getBoundingClientRect();
+  const touchX = touch.clientX - rect.left;
+  const touchY = touch.clientY - rect.top;
+  drawStamp(touchX - stampWidth / 2, touchY - stampHeight / 2);
 });
 
 function clear(){
   ctx.clearRect(0, 0, c.width, c.height);
 }
 
-function touchDownListener(e){
-    const rect = e.target.getBoundingClientRect();
-    pos.x = e.touches[0].clientX - rect.left;
-    pos.y = e.touches[0].clientY - rect.top;
+function touchStartListener(e){
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = c.getBoundingClientRect();
+    pos.x = touch.clientX - rect.left;
+    pos.y = touch.clientY - rect.top;
 }
 
 selFile.addEventListener("change", function(evt){
- var file = evt.target.files;
- var reader = new FileReader();
+  var file = evt.target.files;
+  var reader = new FileReader();
 
- reader.readAsDataURL(file[0]);
+  reader.readAsDataURL(file[0]);
 
- reader.onload = function(){
-  var dataUrl = reader.result;
-  var img = new Image();
+  reader.onload = function(){
+    var dataUrl = reader.result;
+    var img = new Image();
 
-  img.src = dataUrl;
-  img.onload=function(){
-    ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-    ctx.drawImage(img,0,0,400,400);
-  }
+    img.src = dataUrl;
+    img.onload=function(){
+      ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
+      ctx.drawImage(img,0,0,400,400);
+    }
   }
 }, false);
 
 window.addEventListener("load", function(){
-  c.addEventListener("touchstart", touchDownListener, false);
+  c.addEventListener("touchstart", touchStartListener, false);
 
-  c.addEventListener('touchstart', () => {
-    const rect = c.getBoundingClientRect();
-    rectPas.x = event.touches[0].clientX - rect.left;
-    rectPas.y = event.touches[0].clientY - rect.top;
+  c.addEventListener('touchstart', (event) => {
+    event.preventDefault();
+    const touch = event.touches[0];
+    rectPas.x = touch.clientX - c.getBoundingClientRect().left;
+    rectPas.y = touch.clientY - c.getBoundingClientRect().top;
   }, {once: false});
 
-  c.addEventListener('touchend', () => {
-    const rect = c.getBoundingClientRect();
-    ctx.strokeRect(rectPas.x, rectPas.y, pos.x - rectPas.x, pos.y - rectPas.y);
+  c.addEventListener('touchend', (event) => {
+    event.preventDefault();
+    const touch = event.changedTouches[0];
+    const endX = touch.clientX - c.getBoundingClientRect().left;
+    const endY = touch.clientY - c.getBoundingClientRect().top;
+    ctx.strokeRect(rectPas.x, rectPas.y, endX - rectPas.x, endY - rectPas.y);
   }, {once: false});
 });
 
