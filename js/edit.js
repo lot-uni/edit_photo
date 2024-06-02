@@ -64,6 +64,18 @@ window.addEventListener("load", function(){
   c.addEventListener('mouseup', () => {
     ctx.strokeRect(rectPas.x,rectPas.y,pos.x-rectPas.x,pos.y-rectPas.y);
   }, {once: false});
+
+  // 
+  c.addEventListener("touchstart", mouseDownListener, false);
+  c.addEventListener("touchstart", mouseDownListener, false);
+
+  c.addEventListener('touchstart', () => {
+    rectPas.x=pos.x;
+    rectPas.y=pos.y;
+  }, {once: false});
+  c.addEventListener('touchend', () => {
+    ctx.strokeRect(rectPas.x,rectPas.y,pos.x-rectPas.x,pos.y-rectPas.y);
+  }, {once: false});
 });
 
 cleaeButton.addEventListener('mousedown', clear, false);
